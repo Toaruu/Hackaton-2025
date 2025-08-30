@@ -59,7 +59,7 @@ export default function CameraViewWS() {
     init();
 
     return () => {
-      try { wsRef.current?.close(); } catch {}
+      try { wsRef.current?.close(); } catch { }
       if (stream) stream.getTracks().forEach((t) => t.stop());
     };
   }, []);
@@ -133,7 +133,10 @@ export default function CameraViewWS() {
   };
 
   return (
-    <div style={{ position: "relative", width: "min(100%, 960px)", margin: "0 auto" }}>
+    <div
+      id="camera"
+      style={{ position: "relative", width: "min(100%, 1300px)", margin: "0 auto", padding: "100px", height: "780px" }}
+    >
       <div style={{ position: "relative" }}>
         <video ref={videoRef} playsInline muted style={{ width: "100%", borderRadius: 12 }} />
         <canvas
@@ -149,9 +152,6 @@ export default function CameraViewWS() {
       </div>
       {/* Offscreen capture canvas */}
       <canvas ref={captureRef} style={{ display: "none" }} />
-      <div style={{ marginTop: 12, color: connected ? "green" : "crimson" }}>
-        {connected ? "Connected to detector" : "Connecting..."}
-      </div>
     </div>
   );
 }
