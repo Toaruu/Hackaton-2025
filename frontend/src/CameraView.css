@@ -1,3 +1,7 @@
+/* ===========================
+   CameraView.css
+=========================== */
+
 /* Section wrapper (centers everything) */
 .camera-section {
     background: var(--body-color);
@@ -12,9 +16,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* center horizontally */
     text-align: center;
-    /* center legend labels */
     gap: 28px;
 }
 
@@ -24,57 +26,55 @@
     background: #fff;
     width: 100%;
     max-width: 960px;
-    aspect-ratio: 16/9;
+    aspect-ratio: 16 / 9;
     border-radius: 5px;
     margin: 0 auto;
-    /* keep centered */
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+    overflow: hidden;
+    /* clip video & overlays */
 }
 
-
-/* EXACTLY fit the inner rectangle (no spill) */
-.camera-video {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    object-fit: contain;
-    /* no cropping */
-    object-position: center;
-    /* centered inside the box */
-    background: #fff;
-    /* letterbox blends with rectangle */
-    z-index: 0;
-    /* under the guides */
-}
-
-
-/* ---- Figma-like inset L-corners ---- */
+/* Inner “frame” vars so video matches the rectangle width exactly */
 :root {
     --corner-gap: 30px;
-    /* inset from frame */
+    /* inset from outer edge */
     --corner-len: 140px;
-    /* length of each L segment */
+    /* L size */
     --corner-thick: 3px;
-    /* line thickness */
 }
 
+/* VIDEO fills the inner white rectangle perfectly */
+.camera-video {
+    position: absolute;
+    inset: 0;
+    /* shorthand: top/right/bottom/left = 0 */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* fill the white rectangle */
+    object-position: center;
+    background: #fff;
+    z-index: 0;
+}
+
+/* Inset L corners */
 .corner {
     position: absolute;
     width: 0;
     height: 0;
+    z-index: 1;
+    pointer-events: none;
 }
 
 .corner::before,
 .corner::after {
     content: "";
     position: absolute;
-    background: #FFFFFF;
+    background: #2a2a2a;
     border-radius: 2px;
 }
 
-/* top-left */
+/* TL */
 .corner.tl {
     top: var(--corner-gap);
     left: var(--corner-gap);
@@ -94,7 +94,7 @@
     left: 0;
 }
 
-/* top-right */
+/* TR */
 .corner.tr {
     top: var(--corner-gap);
     right: var(--corner-gap);
@@ -114,7 +114,7 @@
     right: 0;
 }
 
-/* bottom-left */
+/* BL */
 .corner.bl {
     bottom: var(--corner-gap);
     left: var(--corner-gap);
@@ -134,7 +134,7 @@
     left: 0;
 }
 
-/* bottom-right */
+/* BR */
 .corner.br {
     bottom: var(--corner-gap);
     right: var(--corner-gap);
@@ -162,13 +162,15 @@
     width: 36px;
     height: 36px;
     transform: translate(-50%, -50%);
+    z-index: 1;
+    pointer-events: none;
 }
 
 .crosshair::before,
 .crosshair::after {
     content: "";
     position: absolute;
-    background: #FFFFFF;
+    background: #2a2a2a;
     border-radius: 2px;
 }
 
@@ -188,18 +190,131 @@
     transform: translateX(-50%);
 }
 
-/* Legend (centered) */
+/* ===========================
+   Result overlay card
+=========================== */
+.result-card {
+    position: absolute;
+    z-index: 3;
+    /* above video + guides */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(780px, calc(100% - (var(--corner-gap) * 2) - 40px));
+    border-radius: 18px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, .28);
+}
+
+.result-card.is-green {
+    background: #166534;
+    color: #fff;
+}
+
+.result-card.is-yellow {
+    background: #f4c20d;
+    color: #1f2937;
+}
+
+.result-card.is-red {
+    background: #d93025;
+    color: #fff;
+}
+
+.card-close {
+    position: absolute;
+    right: 14px;
+    top: 10px;
+    border: none;
+    background: transparent;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    color: inherit;
+    opacity: .9;
+}
+
+.card-close:hover {
+    opacity: 1;
+}
+
+.result-inner {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    align-items: center;
+    gap: 24px;
+    padding: 22px 26px;
+}
+
+.result-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .2);
+}
+
+.result-img--placeholder {
+    background: rgba(255, 255, 255, .25);
+    height: 160px;
+    border-radius: 10px;
+}
+
+.match {
+    font-weight: 700;
+    opacity: .9;
+    margin-bottom: 6px;
+}
+
+.result-title {
+    font-weight: 800;
+    font-size: 1.4rem;
+    margin: 0 0 10px;
+}
+
+.result-pill {
+    display: inline-block;
+    margin: 4px 0 14px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-weight: 800;
+    background: #fff;
+    color: #166534;
+}
+
+.result-card.is-yellow .result-pill {
+    color: #1f2937;
+}
+
+.result-card.is-red .result-pill {
+    color: #7b1a14;
+}
+
+.result-foot {
+    font-size: .95rem;
+    opacity: .95;
+}
+
+.rescan {
+    background: transparent;
+    border: none;
+    color: inherit;
+    text-decoration: underline;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* ===========================
+   Bin legend (buttons)
+=========================== */
 .bin-legend {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
-    /* group centered */
     align-items: flex-start;
     gap: 56px;
     flex-wrap: wrap;
-    /* responsive */
 }
 
 .bin {
@@ -208,6 +323,8 @@
     align-items: center;
     font-weight: 700;
     color: var(--title-color-dark);
+    cursor: pointer;
+    user-select: none;
 }
 
 .bin-circle {
@@ -219,6 +336,11 @@
     font-size: 34px;
     margin-bottom: 8px;
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+    transition: transform .06s ease;
+}
+
+.bin:hover .bin-circle {
+    transform: translateY(-2px);
 }
 
 .red .bin-circle {
@@ -236,9 +358,19 @@
     color: #fff;
 }
 
+/* Responsive */
 @media (max-width: 900px) {
     .camera-box {
         width: 100%;
+    }
+
+    .result-inner {
+        grid-template-columns: 1fr;
+        text-align: left;
+    }
+
+    .result-img {
+        height: 180px;
     }
 
     .bin-legend {
