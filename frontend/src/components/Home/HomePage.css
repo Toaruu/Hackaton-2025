@@ -1,13 +1,3 @@
-.homepage {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 0 1.5rem;
-  background-color: var(--body-color);
-  color: var(--text-color);
-}
-
 .home__container {
   width: 100%;
   max-width: 1200px;
@@ -16,24 +6,10 @@
 
 .home__content {
   display: grid;
-  grid-template-columns: 2fr; /* Two equal columns */
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
   column-gap: 3rem;
   align-items: center;
   padding-top: 5rem;
-}
-
-.homepage__image {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.homepage__earth,
-.homepage__hand {
-  max-width: 100%;
-  height: auto;
-  margin-bottom: var(--mb-1);
 }
 
 .homepage__tagline {
@@ -41,19 +17,22 @@
   flex-direction: column;
   align-items: flex-start;
   gap: var(--mb-0-5);
+  text-align: left;
 }
 
 .homepage__title {
-  font-size: var(--h1-font-size);
+  font-size: var(--big-font-size);
   font-weight: var(--font-semi-bold);
   color: var(--title-color);
-  margin-bottom: var(--mb-0-25);
+  margin-bottom: var(--mb-0-5);
+  font-family: var(--title-font);
 }
 
 .homepage__vision {
   font-size: var(--normal-font-size);
-  color: var(--text-color);
-  margin-bottom: var(--mb-2);
+  color: var(--title-color);
+  margin-bottom: var(--mb-0-5);
+  font-family: var(--body-font);
 }
 
 .homepage__buttons {
@@ -63,10 +42,12 @@
 .homepage__button {
   display: inline-flex;
   align-items: center;
+  font-size: var(--normal-font-size);
+  font-family: var(--body-font);
   background-color: var(--accent-color);
   color: var(--container-color);
   padding: 1rem 2rem;
-  border-radius: 1rem;
+  border-radius: 3rem;
   font-weight: var(--font-medium);
   border: none;
   cursor: pointer;
@@ -82,4 +63,39 @@
   width: 20px;
   height: 20px;
   margin-right: 8px;
+}
+
+.homepage__image {
+  position: relative;
+  width: fit-content;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.homepage__hand {
+  width: 400px;
+  height: auto;
+  z-index: 1;
+}
+
+.homepage__earth {
+  position: absolute;
+  top: -30px;
+  left: 50px;
+  width: 300px;
+  height: auto;
+  z-index: 2;
+  animation: rotateEarth 10s linear infinite;
+}
+
+/* 🌍 Rotation Animation */
+@keyframes rotateEarth {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
