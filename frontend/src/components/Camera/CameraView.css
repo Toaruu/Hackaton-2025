@@ -70,7 +70,7 @@
 .corner::after {
     content: "";
     position: absolute;
-    background: #2a2a2a;
+    background: #ffffff;
     border-radius: 2px;
 }
 
@@ -170,7 +170,7 @@
 .crosshair::after {
     content: "";
     position: absolute;
-    background: #2a2a2a;
+    background: #ffffff;
     border-radius: 2px;
 }
 
