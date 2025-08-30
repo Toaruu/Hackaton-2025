@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 3
+names: ['biodegradable', 'non-biodegradable', 'recyclable']
+
+roboflow:
+  workspace: my-workspace-uiljw
+  project: trash-classifications
+  version: 3
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/my-workspace-uiljw/trash-classifications/dataset/3
