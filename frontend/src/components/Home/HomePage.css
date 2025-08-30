@@ -1,0 +1,154 @@
+/* ===== HERO SECTION ===== */
+.hero {
+  min-height: 100vh;
+  background-color: var(--body-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 72px 40px;
+  position: relative;
+}
+
+.hero__container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Logo Row */
+.hero__logo-row {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hero__logo-img {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+}
+
+.hero__wordmark {
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: 1.2px;
+  color: var(--title-color);
+}
+
+.hero__wordmark .accent {
+  color: var(--accent-color);
+}
+
+/* Grid Layout */
+.hero__grid {
+  display: grid;
+  grid-template-columns: 520px 1fr;
+  gap: 72px;
+  align-items: center;
+}
+
+.hero__illustration {
+  display: flex;
+  justify-content: center;
+}
+
+.hero__earth-stack {
+  position: relative;
+  width: 640px;
+  max-width: 100%;
+}
+
+.hero__hands-img {
+  width: 100%;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+.hero__earth-img {
+  position: absolute;
+  top: 1%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 68%;
+  z-index: 2;
+  filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.02));
+  animation: rotateEarth 15s linear infinite;
+}
+
+@keyframes rotateEarth {
+  from {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  to {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}
+
+/* Content */
+.hero__content {
+  min-width: 360px;
+}
+
+.hero__headline {
+  margin: 0;
+  color: var(--title-color);
+  font-weight: 800;
+  font-size: 3.75rem;
+  line-height: 1.08;
+  letter-spacing: 0.2px;
+}
+
+.underline {
+  text-decoration: underline;
+  text-decoration-color: var(--title-color);
+  text-decoration-thickness: 6px;
+  text-underline-offset: 8px;
+}
+
+.hero__subhead {
+  margin: 18px 0 28px;
+  color: var(--text-color);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* CTA Button */
+.hero__cta {
+  background-color: var(--accent-color);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 14px 26px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 800;
+  font-size: 16px;
+  box-shadow: 0 3px 10px rgba(240, 108, 84, 0.35);
+  transition: transform 0.05s ease, background 0.2s ease;
+}
+
+.hero__cta:hover {
+  background-color: var(--accent-hover);
+}
+
+.hero__cta:active {
+  transform: translateY(1px);
+}
+
+.hero__cta-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--accent-color);
+  display: inline-grid;
+  place-items: center;
+  font-size: 16px;
+  line-height: 0;
+}
