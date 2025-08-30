@@ -2,13 +2,16 @@ import React from 'react';
 import '../App.css';
 import '../styles/HomePage.css'; // Create this CSS file for specific styles
 import nextIcon from '../assets/next.png'; // Ensure you have this icon in the specified path
+import earthImage from '../assets/earth.png'; // Ensure you have this image in the specified path
+import handImage from '../assets/hand.png'; // Ensure you have this image in the specified path
 
 const HomePage = () => {
   return (
     <section className="homepage">
       
         <div className="homepage__image">
-
+            <img src={earthImage} alt="Earth" className="homepage__earth" />
+            <img src={handImage} alt="Hand" className="homepage__hand" />
         </div>
 
         <div className="homepage__tagline">
