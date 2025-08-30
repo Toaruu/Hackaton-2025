@@ -69,7 +69,7 @@ export default function CameraView() {
     const current = overlay ? copy[overlay.bin] : null;
 
     return (
-        <section className="camera-section" aria-label="Demo camera">
+        <section className="camera-section" id="camera">
             <div className="camera-wrap">
                 {/* Camera box */}
                 <div className="camera-box">

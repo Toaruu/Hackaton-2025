@@ -1,113 +1,19 @@
+import { StrictMode } from "react";
 import "./App.css";
-import logo from "./assets/LOGO.png";
-import earth from "./assets/earth.png";
-import hands from "./assets/hand.png";
-import CameraView from "./CameraView.jsx";
+import HomePage from "./components/Home/HomePage.jsx";
+import GuidePage from "./components/Guide/GuidePage.jsx";
+import CameraView from "./components/Camera/CameraView.jsx";
+import Footer from "./components/Footer/Footer.jsx";
 
 export default function App() {
   return (
-    <>
-      {/* ===== HERO ===== */}
-      <header className="hero" id="top">
-        <div className="hero-wrap">
-          {/* Logo (centered near top) */}
-          <div className="logo-row">
-            <img src={logo} alt="Trash Scan Logo" className="logo-img" />
-            <span className="logo-wordmark">
-              TRASH <span className="accent">SCAN</span>
-            </span>
-          </div>
-
-          {/* Two columns */}
-          <div className="columns">
-            {/* Left: layered illustration */}
-            <div className="illustration">
-              <div className="earth-stack" aria-label="Earth in hands">
-                <img src={hands} alt="" className="hands-img" />
-                <img src={earth} alt="Earth" className="earth-img" />
-              </div>
-            </div>
-
-            {/* Right: messaging */}
-            <div className="content">
-              <h1 className="headline">
-                Scan. Sort.<br />
-                <span className="underline">Save the PLANET.</span>
-              </h1>
-
-              <p className="subhead">
-                Bins that see. AI that sorts. A planet that thrives.
-              </p>
-
-              <a href="#camera" className="cta">
-                <span className="cta-icon">↓</span>
-                Try the demo view
-              </a>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* ===== HOW IT WORKS ===== */}
-      <main id="how-it-works" className="how">
-        <div className="how-wrap">
-          <p className="eyebrow">Demo Prototype</p>
-          <h2 className="how-title">How this demo works</h2>
-          <p className="how-lead">
-            This is a <strong>prototype</strong>. In the real product, a camera module is
-            mounted on each bin. When an object is brought near a bin, our YOLO
-            model classifies it, and the screen (or bin indicator) lights up the
-            correct colour.
-          </p>
-
-          {/* colour legend */}
-          <ul className="legend">
-            <li><span className="dot red" /> Red = General Waste</li>
-            <li><span className="dot yellow" /> Yellow = Mixed Recycling</li>
-            <li><span className="dot green" /> Green/Lime = Organics (FOGO)</li>
-          </ul>
-
-          {/* steps */}
-          <ol className="steps">
-            <li>
-              <h3>1) Grant camera access</h3>
-              <p>When prompted, allow camera permissions so the model can see the object.</p>
-            </li>
-            <li>
-              <h3>2) Hold an item up</h3>
-              <p>Move the item into view. When it’s close and steady, the model runs detection.</p>
-            </li>
-            <li>
-              <h3>3) Watch the signal</h3>
-              <p>
-                The on-screen background flashes the recommended bin colour. In hardware,
-                the corresponding bin’s light strip would also illuminate.
-              </p>
-            </li>
-            <li>
-              <h3>4) Drop it in</h3>
-              <p>Place the item into the highlighted bin. Repeat to test multiple items.</p>
-            </li>
-          </ol>
-
-          <div className="note">
-            <strong>Heads up:</strong> the model here is tuned for a demo environment.
-            Real-world deployments will add continuous re-training and contamination checks.
-          </div>
-
-        </div>
+    <StrictMode>
+      <main>
+        <HomePage />
+        <GuidePage />
+        <CameraView />
+        <Footer />
       </main>
-
-      {/* ===== CAMERA MOCKUP SECTION ===== */}
-      <CameraView />
-
-      <footer className="footer">
-        <a href="#top" className="cta">
-          <span className="cta-icon">↑</span>
-          Back to top
-        </a>
-      </footer>
-
-    </>
+    </StrictMode>
   );
 }
