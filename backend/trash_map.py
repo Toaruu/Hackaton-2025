@@ -1,1 +1,0 @@
-# Contains dictionary mapping detected objects to trash categories

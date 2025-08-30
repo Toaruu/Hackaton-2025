@@ -1,1 +1,0 @@
-# Loads YOLOv8 model and runs inference

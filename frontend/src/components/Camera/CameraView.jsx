@@ -1,159 +1,157 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
-import "./CameraView.css";
+// src/components/Camera/CameraViewWS.jsx
+import React, { useEffect, useRef, useState } from "react";
 
-export default function CameraView() {
-    const videoRef = useRef(null);
-    const canvasRef = useRef(null);
+const WS_URL = "ws://localhost:8000/ws/detect"; // change for your backend
 
-    // overlay = null | { bin: 'green'|'yellow'|'red', img: dataURL }
-    const [overlay, setOverlay] = useState(null);
+export default function CameraViewWS() {
+  const videoRef = useRef(null);
+  const captureRef = useRef(null);   // offscreen capture canvas
+  const overlayRef = useRef(null);   // overlay canvas for boxes
+  const wsRef = useRef(null);
+  const sendingRef = useRef(false);  // prevent overlapping sends
+  const [connected, setConnected] = useState(false);
 
-    useEffect(() => {
-        let stream;
-        (async () => {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: "environment" }, // swap to "user" for front cam
-                    audio: false,
-                });
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
-                    await videoRef.current.play();
-                }
-            } catch (e) {
-                console.error("Camera error:", e);
-            }
-        })();
-        return () => {
-            stream?.getTracks()?.forEach((t) => t.stop());
-        };
-    }, []);
+  useEffect(() => {
+    let stream;
+    const init = async () => {
+      // Camera
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false,
+      });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+      }
 
-    const captureFrame = useCallback(() => {
-        const video = videoRef.current;
-        const canvas = canvasRef.current;
-        if (!video || !canvas) return null;
+      // Match canvases to video
+      const setupCanvasSizes = () => {
+        const w = videoRef.current.videoWidth || 640;
+        const h = videoRef.current.videoHeight || 480;
+        [captureRef.current, overlayRef.current].forEach((c) => {
+          if (!c) return;
+          c.width = w;
+          c.height = h;
+        });
+      };
+      videoRef.current.onloadedmetadata = setupCanvasSizes;
+      setupCanvasSizes();
 
-        const vw = video.videoWidth || 1280;
-        const vh = video.videoHeight || 720;
-        canvas.width = vw;
-        canvas.height = vh;
+      // WebSocket
+      wsRef.current = new WebSocket(WS_URL);
+      wsRef.current.onopen = () => setConnected(true);
+      wsRef.current.onclose = () => setConnected(false);
+      wsRef.current.onerror = () => setConnected(false);
 
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(video, 0, 0, vw, vh);
-        return canvas.toDataURL("image/jpeg", 0.9);
-    }, []);
+      wsRef.current.onmessage = (evt) => {
+        try {
+          const data = JSON.parse(evt.data);
+          if (data.detections && overlayRef.current) drawDetections(data);
+        } catch (e) {
+          console.error("WS parse error", e);
+        }
+      };
 
-    const openOverlay = (bin) => {
-        const shot = captureFrame();
-        setOverlay({ bin, img: shot });
+      // Start send loop (throttled)
+      startSendLoop(10); // FPS cap
     };
 
-    const closeOverlay = () => setOverlay(null);
+    init();
 
-    const copy = {
-        green: {
-            title: "Plastic bottle detected.",
-            pill: "Green bin open — drop recyclables.",
-        },
-        yellow: {
-            title: "Cardboard detected.",
-            pill: "Yellow bin open — drop mixed recycling.",
-        },
-        red: {
-            title: "Landfill item detected.",
-            pill: "Red bin open — general waste only.",
-        },
+    return () => {
+      try { wsRef.current?.close(); } catch {}
+      if (stream) stream.getTracks().forEach((t) => t.stop());
     };
+  }, []);
 
-    const current = overlay ? copy[overlay.bin] : null;
+  const drawDetections = (data) => {
+    const ctx = overlayRef.current.getContext("2d");
+    const { detections, width, height } = data;
 
-    return (
-        <section className="camera-section" id="camera">
-            <div className="camera-wrap">
-                {/* Camera box */}
-                <div className="camera-box">
-                    {/* VIDEO fills the white inner rectangle exactly */}
-                    <video
-                        className="camera-video"
-                        ref={videoRef}
-                        autoPlay
-                        muted
-                        playsInline
-                    />
+    // Clear
+    ctx.clearRect(0, 0, overlayRef.current.width, overlayRef.current.height);
 
-                    {/* Figma-style inset corners + crosshair */}
-                    <span className="corner tl" aria-hidden />
-                    <span className="corner tr" aria-hidden />
-                    <span className="corner bl" aria-hidden />
-                    <span className="corner br" aria-hidden />
-                    <span className="crosshair" aria-hidden />
+    // Scale from model's orig size to canvas size
+    const sx = overlayRef.current.width / width;
+    const sy = overlayRef.current.height / height;
 
-                    {/* Result card (overlay) */}
-                    {overlay && (
-                        <div
-                            className={`result-card is-${overlay.bin}`}
-                            role="dialog"
-                            aria-live="polite"
-                        >
-                            <button
-                                aria-label="Close"
-                                className="card-close"
-                                onClick={closeOverlay}
-                            >
-                                ×
-                            </button>
+    ctx.lineWidth = 2;
+    ctx.font = "14px Poppins, sans-serif";
+    detections.forEach((d) => {
+      const x = d.x1 * sx;
+      const y = d.y1 * sy;
+      const w = (d.x2 - d.x1) * sx;
+      const h = (d.y2 - d.y1) * sy;
 
-                            <div className="result-inner">
-                                {overlay.img ? (
-                                    <img
-                                        className="result-img"
-                                        src={overlay.img}
-                                        alt="Captured item"
-                                    />
-                                ) : (
-                                    <div className="result-img result-img--placeholder" />
-                                )}
+      // Box
+      ctx.strokeStyle = "hsl(10, 89%, 55%)"; // accent coral
+      ctx.strokeRect(x, y, w, h);
 
-                                <div className="result-copy">
-                                    <div className="match">Match found</div>
-                                    <h3 className="result-title">{current.title}</h3>
+      // Label
+      const label = `${d.label} ${Math.round(d.conf * 100)}%`;
+      const pad = 4;
+      ctx.fillStyle = "rgba(0,0,0,0.6)";
+      const tw = ctx.measureText(label).width + pad * 2;
+      const th = 18 + pad * 2;
+      ctx.fillRect(x, Math.max(0, y - th), tw, th);
+      ctx.fillStyle = "#fff";
+      ctx.fillText(label, x + pad, Math.max(14 + pad, y - th + 14 + pad - 2));
+    });
+  };
 
-                                    <div className="result-pill">
-                                        {current.pill}
-                                    </div>
+  const startSendLoop = (fps = 8) => {
+    const interval = Math.max(1, Math.floor(1000 / fps));
+    const loop = async () => {
+      if (wsRef.current?.readyState === WebSocket.OPEN && !sendingRef.current) {
+        try {
+          sendingRef.current = true;
+          const blob = await captureFrameBlob();
+          if (blob) {
+            const buf = await blob.arrayBuffer();
+            wsRef.current.send(buf);
+          }
+        } catch (e) {
+          // swallow send errors; will retry next tick
+        } finally {
+          sendingRef.current = false;
+        }
+      }
+      setTimeout(loop, interval);
+    };
+    loop();
+  };
 
-                                    <div className="result-foot">
-                                        Not your item?{" "}
-                                        <button className="rescan" onClick={closeOverlay}>
-                                            Click here to rescan
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
+  const captureFrameBlob = () => {
+    const video = videoRef.current;
+    const canvas = captureRef.current;
+    if (!video || !canvas) return null;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    return new Promise((resolve) => {
+      canvas.toBlob((b) => resolve(b), "image/jpeg", 0.6); // compress for bandwidth
+    });
+  };
 
-                    {/* offscreen canvas for snapshot */}
-                    <canvas ref={canvasRef} style={{ display: "none" }} />
-                </div>
-
-                {/* Bin legend (click to trigger overlay) */}
-                <ul className="bin-legend">
-                    <li className="bin red" onClick={() => openOverlay("red")}>
-                        <span className="bin-circle">🗑️</span>
-                        <span>General</span>
-                    </li>
-                    <li className="bin yellow" onClick={() => openOverlay("yellow")}>
-                        <span className="bin-circle">🗑️</span>
-                        <span>Recycling</span>
-                    </li>
-                    <li className="bin green" onClick={() => openOverlay("green")}>
-                        <span className="bin-circle">🗑️</span>
-                        <span>Organics</span>
-                    </li>
-                </ul>
-            </div>
-        </section>
-    );
+  return (
+    <div style={{ position: "relative", width: "min(100%, 960px)", margin: "0 auto" }}>
+      <div style={{ position: "relative" }}>
+        <video ref={videoRef} playsInline muted style={{ width: "100%", borderRadius: 12 }} />
+        <canvas
+          ref={overlayRef}
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            pointerEvents: "none",
+          }}
+        />
+      </div>
+      {/* Offscreen capture canvas */}
+      <canvas ref={captureRef} style={{ display: "none" }} />
+      <div style={{ marginTop: 12, color: connected ? "green" : "crimson" }}>
+        {connected ? "Connected to detector" : "Connecting..."}
+      </div>
+    </div>
+  );
 }
