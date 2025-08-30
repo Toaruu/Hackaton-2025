@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Trash Scanner</title>
+  <style>
+    video {
+      width: 100%;
+      max-width: 600px;
+      border: 2px solid #333;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Scan Your Trash</h2>
+  <video id="video" autoplay playsinline></video>
+
+  <script>
+    const video = document.getElementById('video');
+
+    // Check for browser support
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+          video.srcObject = stream;
+        })
+        .catch(error => {
+          console.error("Camera access denied:", error);
+        });
+    } else {
+      alert("Your browser doesn't support camera access.");
+    }
+  </script>
+</body>
+</html>
