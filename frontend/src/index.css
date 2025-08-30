@@ -1,17 +1,62 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  /* Base HSL values derived from your palette */
+  --hue-green: 142;         /* #086A35 */
+  --sat-green: 88%;
+  --light-green: 22%;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  --hue-coral: 10;          /* #F06C54 */
+  --sat-coral: 89%;
+  --light-coral: 65%;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --hue-ivory: 42;          /* #F8F5EE */
+  --sat-ivory: 45%;
+  --light-ivory: 96%;
+
+  /* Applied Colors */
+  --title-color: hsl(var(--hue-green), var(--sat-green), var(--light-green));
+  --title-color-dark: hsl(var(--hue-green), var(--sat-green), 10%);
+  --text-color: hsl(var(--hue-green), var(--sat-green), 35%);
+  --body-color: hsl(var(--hue-ivory), var(--sat-ivory), var(--light-ivory));
+  --container-color: #FFFFFF;
+
+  /* Accent */
+  --accent-color: hsl(var(--hue-coral), var(--sat-coral), var(--light-coral));
+  --accent-hover: hsl(var(--hue-coral), var(--sat-coral), 55%);
+
+   /* ======= Font and typography ======= */
+  --body-font: "Poppins", "Roboto";
+
+  /* 0.5rem = 8px | 1rem = 16px ... */
+  --big-font-size: 3.5rem;
+  --h1-font-size: 2.25rem;
+  --h2-font-size: 1.5rem;
+  --h3-font-size: 1.25rem;
+  --normal-font-size: 1rem;
+  --small-font-size: 0.875rem;
+  --smaller-font-size: 0.813rem;
+  --tiny-font-size: 0.625rem;
+
+  /* ======= Font weight ======= */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semi-bold: 600;
+
+  /* ======= Margenes Bottom ======= */
+  --mb-0-25: 0.25rem;
+  --mb-0-5: 0.5rem;
+  --mb-0-75: 0.75rem;
+  --mb-1: 1rem;
+  --mb-1-5: 1.5rem;
+  --mb-2: 2rem;
+  --mb-2-5: 2.5rem;
+  --mb-3: 3rem;
+
+  /* ======= Z index ======= */
+  --z-tooltip: 10;
+  --z-fixed: 100;
+  --z-modal: 1000;
 }
+
 
 a {
   font-weight: 500;
