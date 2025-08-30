@@ -1,0 +1,253 @@
+/* Section wrapper (centers everything) */
+.camera-section {
+    background: var(--body-color);
+    padding: 72px 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.camera-wrap {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* center horizontally */
+    text-align: center;
+    /* center legend labels */
+    gap: 28px;
+}
+
+/* Camera box */
+.camera-box {
+    position: relative;
+    background: #fff;
+    width: 100%;
+    max-width: 960px;
+    aspect-ratio: 16/9;
+    border-radius: 5px;
+    margin: 0 auto;
+    /* keep centered */
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+}
+
+
+/* EXACTLY fit the inner rectangle (no spill) */
+.camera-video {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    object-fit: contain;
+    /* no cropping */
+    object-position: center;
+    /* centered inside the box */
+    background: #fff;
+    /* letterbox blends with rectangle */
+    z-index: 0;
+    /* under the guides */
+}
+
+
+/* ---- Figma-like inset L-corners ---- */
+:root {
+    --corner-gap: 30px;
+    /* inset from frame */
+    --corner-len: 140px;
+    /* length of each L segment */
+    --corner-thick: 3px;
+    /* line thickness */
+}
+
+.corner {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+.corner::before,
+.corner::after {
+    content: "";
+    position: absolute;
+    background: #FFFFFF;
+    border-radius: 2px;
+}
+
+/* top-left */
+.corner.tl {
+    top: var(--corner-gap);
+    left: var(--corner-gap);
+}
+
+.corner.tl::before {
+    width: var(--corner-len);
+    height: var(--corner-thick);
+    top: 0;
+    left: 0;
+}
+
+.corner.tl::after {
+    width: var(--corner-thick);
+    height: var(--corner-len);
+    top: 0;
+    left: 0;
+}
+
+/* top-right */
+.corner.tr {
+    top: var(--corner-gap);
+    right: var(--corner-gap);
+}
+
+.corner.tr::before {
+    width: var(--corner-len);
+    height: var(--corner-thick);
+    top: 0;
+    right: 0;
+}
+
+.corner.tr::after {
+    width: var(--corner-thick);
+    height: var(--corner-len);
+    top: 0;
+    right: 0;
+}
+
+/* bottom-left */
+.corner.bl {
+    bottom: var(--corner-gap);
+    left: var(--corner-gap);
+}
+
+.corner.bl::before {
+    width: var(--corner-len);
+    height: var(--corner-thick);
+    bottom: 0;
+    left: 0;
+}
+
+.corner.bl::after {
+    width: var(--corner-thick);
+    height: var(--corner-len);
+    bottom: 0;
+    left: 0;
+}
+
+/* bottom-right */
+.corner.br {
+    bottom: var(--corner-gap);
+    right: var(--corner-gap);
+}
+
+.corner.br::before {
+    width: var(--corner-len);
+    height: var(--corner-thick);
+    bottom: 0;
+    right: 0;
+}
+
+.corner.br::after {
+    width: var(--corner-thick);
+    height: var(--corner-len);
+    bottom: 0;
+    right: 0;
+}
+
+/* Crosshair */
+.crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 36px;
+    height: 36px;
+    transform: translate(-50%, -50%);
+}
+
+.crosshair::before,
+.crosshair::after {
+    content: "";
+    position: absolute;
+    background: #FFFFFF;
+    border-radius: 2px;
+}
+
+.crosshair::before {
+    width: 100%;
+    height: 3px;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+}
+
+.crosshair::after {
+    height: 100%;
+    width: 3px;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+}
+
+/* Legend (centered) */
+.bin-legend {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    /* group centered */
+    align-items: flex-start;
+    gap: 56px;
+    flex-wrap: wrap;
+    /* responsive */
+}
+
+.bin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 700;
+    color: var(--title-color-dark);
+}
+
+.bin-circle {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 34px;
+    margin-bottom: 8px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+}
+
+.red .bin-circle {
+    background: #f44336;
+    color: #fff;
+}
+
+.yellow .bin-circle {
+    background: #ffcc00;
+    color: #222;
+}
+
+.green .bin-circle {
+    background: #66bb6a;
+    color: #fff;
+}
+
+@media (max-width: 900px) {
+    .camera-box {
+        width: 100%;
+    }
+
+    .bin-legend {
+        gap: 36px;
+    }
+
+    .bin-circle {
+        width: 72px;
+        height: 72px;
+        font-size: 28px;
+    }
+}

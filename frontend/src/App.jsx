@@ -2,14 +2,15 @@ import "./App.css";
 import logo from "./assets/LOGO.png";
 import earth from "./assets/earth.png";
 import hands from "./assets/hand.png";
+import CameraView from "./CameraView.jsx";
 
 export default function App() {
   return (
     <>
       {/* ===== HERO ===== */}
-      <header className="hero">
+      <header className="hero" id="top">
         <div className="hero-wrap">
-          {/* Top: centered logo */}
+          {/* Logo (centered near top) */}
           <div className="logo-row">
             <img src={logo} alt="Trash Scan Logo" className="logo-img" />
             <span className="logo-wordmark">
@@ -35,12 +36,12 @@ export default function App() {
               </h1>
 
               <p className="subhead">
-                Your camera. Our AI. A planet-first solution to waste sorting.
+                Bins that see. AI that sorts. A planet that thrives.
               </p>
 
-              <a href="#how-it-works" className="cta">
+              <a href="#camera" className="cta">
                 <span className="cta-icon">↓</span>
-                How the demo works
+                Try the demo view
               </a>
             </div>
           </div>
@@ -94,9 +95,19 @@ export default function App() {
             Real-world deployments will add continuous re-training and contamination checks.
           </div>
 
-          <a href="#top" className="back-top">Back to top ↑</a>
         </div>
       </main>
+
+      {/* ===== CAMERA MOCKUP SECTION ===== */}
+      <CameraView />
+
+      <footer className="footer">
+        <a href="#top" className="cta">
+          <span className="cta-icon">↑</span>
+          Back to top
+        </a>
+      </footer>
+
     </>
   );
 }
